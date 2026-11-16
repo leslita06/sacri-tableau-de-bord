@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>SACRI · Tableau de bord du groupe</title>
+<link rel="icon" href="data:,">
+<link rel="preload" href="assets/Inter.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="assets/style.css?v=20261116a">
+</head>
+<body>
+<div class="demo"><div class="wrap"><b>Données de démonstration</b><span class="sep"> · </span><span>chiffres fictifs, aucun client réel, ne reflètent pas l'activité du groupe</span></div></div>
+
+<header class="masthead">
+  <div class="wrap mh">
+    <img src="assets/logo-sacri.png" alt="SACRI" class="logo">
+    <div class="mh-txt">
+      <p class="eyebrow">Tableau de bord du groupe</p>
+      <p class="arrete">Situation arrêtée à fin <span id="arrete"></span></p>
+    </div>
+  </div>
+</header>
+
+<nav class="filters" id="filters">
+  <div class="wrap fl">
+    <div class="socs" id="socs" role="tablist" aria-label="Société"></div>
+    <label class="mois">Mois
+      <select id="f-mois"></select>
+    </label>
+  </div>
+</nav>
+
+<main class="wrap">
+  <section class="intro">
+    <div class="intro-l">
+      <h1 id="titre">Groupe consolidé</h1>
+      <p id="metier" class="metier"></p>
+    </div>
+    <img id="soc-logo" class="soc-logo" alt="" hidden>
+  </section>
+  <p id="phrase" class="lede"></p>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="block" id="b-ventes">
+    <div class="bh"><span class="num">01</span><h2>Ventes</h2></div>
+    <div class="grid2">
+      <div class="card">
+        <p class="cap">Chiffre d'affaires mensuel sur 12 mois <span class="leg" id="leg-ca"></span></p>
+        <div class="ch"><canvas id="c-ca"></canvas></div>
+      </div>
+      <div class="card">
+        <p class="cap" id="cap-fam">Premières familles de produits, sur le mois</p>
+        <div class="bars" id="familles"></div>
+      </div>
+    </div>
+    <div class="card" id="contrib-box">
+      <p class="cap">Contribution des sociétés, 12 mois glissants</p>
+      <div class="contrib" id="contrib"></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="bh"><span class="num">02</span><h2>Devis et appels d'offres</h2></div>
+    <div class="grid3" id="devis-k"></div>
+    <div class="grid2">
+      <div class="card">
+        <p class="cap">Appels d'offres et gros devis par étape <span class="note">situation à fin octobre</span></p>
+        <div class="funnel" id="funnel"></div>
+      </div>
+      <div class="card">
+        <p class="cap">Taux de transformation des devis, 12 mois</p>
+        <div class="ch"><canvas id="c-devis"></canvas></div>
+      </div>
+    </div>
+    <div class="card">
+      <p class="cap">Dix plus gros dossiers en cours <span class="note">les clients sont désignés par un code</span></p>
+      <div class="tbl-wrap"><table class="tbl" id="t-ao"></table></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="bh"><span class="num">03</span><h2>Stocks</h2></div>
+    <div class="grid3" id="stock-k"></div>
+    <div class="grid2">
+      <div class="card">
+        <p class="cap">Couverture du stock, en jours de ventes <span class="leg"><i class="sw o"></i>Couverture <i class="sw g"></i>Ruptures</span></p>
+        <div class="ch"><canvas id="c-stock"></canvas></div>
+      </div>
+      <div class="card">
+        <p class="cap">Articles en rupture <span class="note">situation à fin octobre</span></p>
+        <ul class="rupt" id="rupt"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="bh"><span class="num">04</span><h2>Service après-vente</h2></div>
+    <div class="grid3" id="sav-k"></div>
+    <div class="grid2">
+      <div class="card">
+        <p class="cap">Matériels entrés et sortis de l'atelier <span class="leg"><i class="sw o"></i>Entrés <i class="sw g"></i>Sortis</span></p>
+        <div class="ch"><canvas id="c-sav"></canvas></div>
+      </div>
+      <div class="card">
+        <p class="cap">Réparations en atelier, par ancienneté <span class="note">situation à fin octobre</span></p>
+        <div class="bars" id="atelier"></div>
+        <p class="cap cap2">Délai moyen de réparation, en jours <span class="leg"><i class="sw o"></i>Réel <i class="sw d"></i>Objectif</span></p>
+        <div class="ch ch-s"><canvas id="c-delai"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="bh"><span class="num">05</span><h2>Finance</h2></div>
+    <div class="grid3" id="fin-k"></div>
+    <div class="grid2">
+      <div class="card">
+        <p class="cap">Encours clients par ancienneté, à fin de mois</p>
+        <div class="aged" id="aged"></div>
+        <p class="cap cap2">Trésorerie disponible, fin de mois</p>
+        <div class="ch ch-s"><canvas id="c-treso"></canvas></div>
+      </div>
+      <div class="card">
+        <p class="cap">Principaux impayés à plus de 60 jours <span class="note">situation à fin octobre</span></p>
+        <div class="tbl-wrap"><table class="tbl" id="t-imp"></table></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p><strong>Données entièrement fictives, préparées pour une démonstration.</strong> Seuls sont réels le nom des cinq sociétés du groupe et la description de leurs métiers, tels que présentés sur le site public de SACRI. Chiffres d'affaires, familles, devis, appels d'offres, stocks, ruptures, réparations, encours, impayés et trésorerie sont inventés ; les clients sont désignés par un code et ne correspondent à aucune entreprise existante.</p>
+    <p class="small">Montants en francs CFA hors taxes. Le jour du tableau réel, chaque chiffre viendrait des logiciels de gestion du groupe.</p>
+  </div>
+</footer>
+
+<script src="assets/chart.umd.min.js?v=4"></script>
+<script src="assets/app.js?v=20261116a"></script>
+</body>
+</html>

@@ -224,7 +224,7 @@ function renderAlertes(){
     return '<tr><td class="rh"><span>'+socIco(s)+s+"</span></td>"+cats.map(function(c){
       var it=A.filter(function(a){return a.cat===c&&socsOf(a.soc).indexOf(s)>=0;}),n=it.length,hh=it.filter(function(a){return a.niv==="haute";}).length;
       var cl=n===0?"z":(hh>=2||n>=3?"l3":hh?"l2":"l1");
-      return '<td class="'+cl+(AF.soc===s&&AF.cat===c?" sel":"")+'" data-ms="'+s+'" data-mc="'+c+'">'+(n||"·".replace("·","0"))+"</td>";
+      return '<td class="'+cl+(AF.soc===s&&AF.cat===c?" sel":"")+'" data-ms="'+s+'" data-mc="'+c+'">'+(n||"0")+"</td>";
     }).join("")+"</tr>";}).join("")+"</tbody>";
   [].forEach.call(document.querySelectorAll("[data-ms]"),function(td){if(td.classList.contains("z"))return;td.onclick=function(){if(AF.soc===td.dataset.ms&&AF.cat===td.dataset.mc)AF={soc:null,cat:null,niv:null};else AF={soc:td.dataset.ms,cat:td.dataset.mc,niv:null};renderAlertes();};});
   var chips=[["Toutes",{soc:null,cat:null,niv:null},"list-checks"],["Fortes seulement",{soc:null,cat:null,niv:"haute"},"siren"]].concat(D.socs.map(function(s){return[s,{soc:s,cat:null,niv:null},SOC[s].ico];}));

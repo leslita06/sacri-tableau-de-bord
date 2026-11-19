@@ -4,140 +4,151 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>SACRI · Tableau de bord du groupe</title>
+<title>SACRI : tableau de bord du groupe</title>
 <link rel="icon" href="data:,">
 <link rel="preload" href="assets/Inter.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="assets/style.css?v=20261116a">
+<link rel="stylesheet" href="assets/style.css?v=20261119a">
 </head>
 <body>
-<div class="demo"><div class="wrap"><b>Données de démonstration</b><span class="sep"> · </span><span>chiffres fictifs, aucun client réel, ne reflètent pas l'activité du groupe</span></div></div>
-
-<header class="masthead">
-  <div class="wrap mh">
+<header class="top">
+  <div class="wrap top-in">
     <img src="assets/logo-sacri.png" alt="SACRI" class="logo">
-    <div class="mh-txt">
+    <div class="top-t">
       <p class="eyebrow">Tableau de bord du groupe</p>
-      <p class="arrete">Situation arrêtée à fin <span id="arrete"></span></p>
+      <p class="sub">Cinq sociétés, situation au <b id="date"></b></p>
     </div>
+    <span class="illu" title="Chiffres d'illustration, sans lien avec l'activité réelle du groupe"><i data-i="info"></i>Données illustratives</span>
   </div>
 </header>
 
-<nav class="filters" id="filters">
-  <div class="wrap fl">
-    <div class="socs" id="socs" role="tablist" aria-label="Société"></div>
-    <label class="mois">Mois
-      <select id="f-mois"></select>
-    </label>
+<nav class="tabs" id="tabs">
+  <div class="wrap tabs-in" role="tablist">
+    <button data-v="ensemble" class="on"><i data-i="layout-dashboard"></i>Vue d'ensemble</button>
+    <button data-v="decisions"><i data-i="gavel"></i>Décisions<span class="badge" id="b-dec"></span></button>
+    <button data-v="echeancier"><i data-i="calendar-days"></i>Échéancier<span class="badge red" id="b-ech"></span></button>
+    <button data-v="tresorerie"><i data-i="wallet"></i>Trésorerie</button>
+    <button data-v="alertes"><i data-i="triangle-alert"></i>Alertes<span class="badge red" id="b-al"></span></button>
   </div>
 </nav>
 
 <main class="wrap">
-  <section class="intro">
-    <div class="intro-l">
-      <h1 id="titre">Groupe consolidé</h1>
-      <p id="metier" class="metier"></p>
-    </div>
-    <img id="soc-logo" class="soc-logo" alt="" hidden>
-  </section>
-  <p id="phrase" class="lede"></p>
 
-  <section class="kpis" id="kpis"></section>
+<section class="view on" id="v-ensemble">
+  <div class="vh">
+    <h1>Le groupe en un coup d'œil</h1>
+    <p class="lede" id="lede"></p>
+  </div>
+  <div class="kpis" id="kpis"></div>
 
-  <section class="block" id="b-ventes">
-    <div class="bh"><span class="num">01</span><h2>Ventes</h2></div>
-    <div class="grid2">
-      <div class="card">
-        <p class="cap">Chiffre d'affaires mensuel sur 12 mois <span class="leg" id="leg-ca"></span></p>
-        <div class="ch"><canvas id="c-ca"></canvas></div>
-      </div>
-      <div class="card">
-        <p class="cap" id="cap-fam">Premières familles de produits, sur le mois</p>
-        <div class="bars" id="familles"></div>
-      </div>
-    </div>
-    <div class="card" id="contrib-box">
-      <p class="cap">Contribution des sociétés, 12 mois glissants</p>
-      <div class="contrib" id="contrib"></div>
-    </div>
-  </section>
+  <div class="sh"><h2><i data-i="building-2"></i>Les cinq sociétés côte à côte</h2><p class="hint">Cliquez une société pour voir ses alertes.</p></div>
+  <div class="socs" id="socs"></div>
 
-  <section class="block">
-    <div class="bh"><span class="num">02</span><h2>Devis et appels d'offres</h2></div>
-    <div class="grid3" id="devis-k"></div>
-    <div class="grid2">
-      <div class="card">
-        <p class="cap">Appels d'offres et gros devis par étape <span class="note">situation à fin octobre</span></p>
-        <div class="funnel" id="funnel"></div>
-      </div>
-      <div class="card">
-        <p class="cap">Taux de transformation des devis, 12 mois</p>
-        <div class="ch"><canvas id="c-devis"></canvas></div>
-      </div>
+  <div class="grid3">
+    <div class="card">
+      <p class="cap"><i data-i="chart-line"></i>Facturé par mois, en M FCFA HT</p>
+      <div class="ch"><canvas id="c-fact"></canvas></div>
+      <p class="foot-n">Novembre arrêté au 19.</p>
     </div>
     <div class="card">
-      <p class="cap">Dix plus gros dossiers en cours <span class="note">les clients sont désignés par un code</span></p>
-      <div class="tbl-wrap"><table class="tbl" id="t-ao"></table></div>
+      <p class="cap"><i data-i="scale"></i>Trésorerie et seuil d'alerte, en M FCFA</p>
+      <div class="ch"><canvas id="c-cmp"></canvas></div>
+      <p class="foot-n"><span class="sw o"></span>Aujourd'hui <span class="sw g"></span>Point bas à 13 semaines <span class="sw dash"></span>Seuil d'alerte</p>
     </div>
-  </section>
+    <div class="card">
+      <p class="cap"><i data-i="file-text"></i>Devis en cours, répartition par société</p>
+      <div class="ch"><canvas id="c-devis"></canvas></div>
+      <p class="foot-n" id="devis-n"></p>
+    </div>
+  </div>
+</section>
 
-  <section class="block">
-    <div class="bh"><span class="num">03</span><h2>Stocks</h2></div>
-    <div class="grid3" id="stock-k"></div>
-    <div class="grid2">
-      <div class="card">
-        <p class="cap">Couverture du stock, en jours de ventes <span class="leg"><i class="sw o"></i>Couverture <i class="sw g"></i>Ruptures</span></p>
-        <div class="ch"><canvas id="c-stock"></canvas></div>
-      </div>
-      <div class="card">
-        <p class="cap">Articles en rupture <span class="note">situation à fin octobre</span></p>
-        <ul class="rupt" id="rupt"></ul>
-      </div>
+<section class="view" id="v-decisions">
+  <div class="vh">
+    <h1>Décisions à prendre</h1>
+    <p class="lede">Chaque carte dit ce qui est en jeu, qui décide et pour quand. Un clic sur un bouton enregistre la décision et la fait passer dans le suivi.</p>
+  </div>
+  <div class="legend-types" id="types"></div>
+  <div class="dec-cols">
+    <div>
+      <div class="sh"><h2><i data-i="hourglass"></i>À décider <span class="cnt" id="n-afaire"></span></h2></div>
+      <div class="dec-list" id="d-afaire"></div>
     </div>
-  </section>
+    <div class="suivi-col">
+      <div class="sh"><h2><i data-i="list-checks"></i>Suivi</h2><button class="lnk" id="reset"><i data-i="rotate-ccw"></i>Remettre à zéro</button></div>
+      <p class="col-t"><i data-i="clock"></i>En cours <span class="cnt" id="n-encours"></span></p>
+      <div class="suivi" id="d-encours"></div>
+      <p class="col-t"><i data-i="circle-check-big"></i>Faites <span class="cnt" id="n-fait"></span></p>
+      <div class="suivi" id="d-fait"></div>
+    </div>
+  </div>
+</section>
 
-  <section class="block">
-    <div class="bh"><span class="num">04</span><h2>Service après-vente</h2></div>
-    <div class="grid3" id="sav-k"></div>
-    <div class="grid2">
-      <div class="card">
-        <p class="cap">Matériels entrés et sortis de l'atelier <span class="leg"><i class="sw o"></i>Entrés <i class="sw g"></i>Sortis</span></p>
-        <div class="ch"><canvas id="c-sav"></canvas></div>
-      </div>
-      <div class="card">
-        <p class="cap">Réparations en atelier, par ancienneté <span class="note">situation à fin octobre</span></p>
-        <div class="bars" id="atelier"></div>
-        <p class="cap cap2">Délai moyen de réparation, en jours <span class="leg"><i class="sw o"></i>Réel <i class="sw d"></i>Objectif</span></p>
-        <div class="ch ch-s"><canvas id="c-delai"></canvas></div>
-      </div>
-    </div>
-  </section>
+<section class="view" id="v-echeancier">
+  <div class="vh">
+    <h1>Échéancier</h1>
+    <p class="lede" id="ech-lede"></p>
+  </div>
+  <div class="card frise-card">
+    <p class="cap"><i data-i="calendar-clock"></i>Échéances par semaine</p>
+    <div class="frise" id="frise"></div>
+  </div>
+  <div class="filt" id="ech-filt"></div>
+  <div id="ech"></div>
+</section>
 
-  <section class="block">
-    <div class="bh"><span class="num">05</span><h2>Finance</h2></div>
-    <div class="grid3" id="fin-k"></div>
-    <div class="grid2">
-      <div class="card">
-        <p class="cap">Encours clients par ancienneté, à fin de mois</p>
-        <div class="aged" id="aged"></div>
-        <p class="cap cap2">Trésorerie disponible, fin de mois</p>
-        <div class="ch ch-s"><canvas id="c-treso"></canvas></div>
-      </div>
-      <div class="card">
-        <p class="cap">Principaux impayés à plus de 60 jours <span class="note">situation à fin octobre</span></p>
-        <div class="tbl-wrap"><table class="tbl" id="t-imp"></table></div>
-      </div>
+<section class="view" id="v-tresorerie">
+  <div class="vh">
+    <h1>Trésorerie du groupe sur 13 semaines</h1>
+    <p class="lede" id="tr-lede"></p>
+  </div>
+  <div class="kpis" id="tr-kpis"></div>
+  <div class="grid2">
+    <div class="card">
+      <p class="cap"><i data-i="chart-line"></i>Solde du groupe en fin de semaine, en M FCFA</p>
+      <div class="ch ch-l"><canvas id="c-tr"></canvas></div>
+      <p class="foot-n"><span class="sw o"></span>Solde prévu <span class="sw dash"></span>Seuil d'alerte du groupe</p>
     </div>
-  </section>
+    <div class="card">
+      <p class="cap"><i data-i="banknote"></i>Entrées et sorties par semaine, en M FCFA</p>
+      <div class="ch ch-l"><canvas id="c-flux"></canvas></div>
+      <p class="foot-n"><span class="sw g"></span>Encaissements <span class="sw o"></span>Décaissements</p>
+    </div>
+  </div>
+  <div class="sh"><h2><i data-i="building-2"></i>Chaque société face à son seuil</h2></div>
+  <div class="multi" id="multi"></div>
+  <div class="card">
+    <p class="cap"><i data-i="receipt"></i>Ce que les clients doivent au groupe, par ancienneté</p>
+    <div class="aged" id="aged"></div>
+  </div>
+</section>
+
+<section class="view" id="v-alertes">
+  <div class="vh">
+    <h1>Alertes</h1>
+    <p class="lede" id="al-lede"></p>
+  </div>
+  <div class="card">
+    <p class="cap"><i data-i="siren"></i>Où sont les alertes, société par sujet</p>
+    <div class="mx-wrap"><table class="mx" id="mx"></table></div>
+  </div>
+  <div class="filt" id="al-filt"></div>
+  <div class="al-list" id="al-list"></div>
+</section>
+
 </main>
 
 <footer class="foot">
   <div class="wrap">
-    <p><strong>Données entièrement fictives, préparées pour une démonstration.</strong> Seuls sont réels le nom des cinq sociétés du groupe et la description de leurs métiers, tels que présentés sur le site public de SACRI. Chiffres d'affaires, familles, devis, appels d'offres, stocks, ruptures, réparations, encours, impayés et trésorerie sont inventés ; les clients sont désignés par un code et ne correspondent à aucune entreprise existante.</p>
-    <p class="small">Montants en francs CFA hors taxes. Le jour du tableau réel, chaque chiffre viendrait des logiciels de gestion du groupe.</p>
+    <p><b>Données illustratives.</b> Seuls les noms des cinq sociétés du groupe et leurs métiers sont réels. Montants, clients, devis, stocks, réparations et trésorerie sont inventés pour montrer le fonctionnement du tableau ; les clients ne correspondent à aucune entreprise existante. Montants en francs CFA hors taxes.</p>
+    <p class="small">Les décisions cliquées sont gardées sur cet appareil uniquement. Dans le tableau réel, elles seraient partagées avec l'équipe, et les chiffres viendraient des logiciels de gestion du groupe.</p>
   </div>
 </footer>
 
+<div class="toast" id="toast"></div>
+
 <script src="assets/chart.umd.min.js?v=4"></script>
-<script src="assets/app.js?v=20261116a"></script>
+<script src="assets/icons.js?v=20261119a"></script>
+<script src="data/donnees.js?v=20261119a"></script>
+<script src="assets/app.js?v=20261119a"></script>
 </body>
 </html>

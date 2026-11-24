@@ -134,10 +134,10 @@ h2{font:600 15px/1.3 var(--sans);letter-spacing:-.01em;display:flex;align-items:
 /* ---------- tableau des sociétés ---------- */
 .tblc{overflow-x:auto;overflow-y:hidden}
 .tbl{width:100%;min-width:940px;border-collapse:collapse}
-.tbl th{font:500 12.5px/1.2 var(--sans);color:var(--mut);text-align:right;padding:14px 16px 12px;white-space:nowrap;border-bottom:1px solid var(--line)}
+.tbl th{font:500 12.5px/1.2 var(--sans);color:var(--mut);text-align:right;padding:14px 14px 12px;white-space:nowrap;border-bottom:1px solid var(--line)}
 .tbl th:first-child,.tbl td:first-child{text-align:left;padding-left:20px}
 .tbl th:last-child,.tbl td:last-child{padding-right:20px}
-.tbl td{height:60px;padding:8px 16px;text-align:right;white-space:nowrap;font:400 14px/1.3 var(--sans);border-bottom:1px solid var(--line2)}
+.tbl td{height:60px;padding:8px 14px;text-align:right;white-space:nowrap;font:400 14px/1.3 var(--sans);border-bottom:1px solid var(--line2)}
 .tbl tbody tr{cursor:pointer;transition:background .12s}
 .tbl tbody tr:hover{background:#FAFAF9}
 .tbl tbody tr.on{background:var(--accb)}
@@ -151,6 +151,8 @@ tr.on .sn .ti{background:#fff;color:var(--acc)}
 .sn .mt{font:400 12.5px/1.3 var(--sans);color:var(--mut);margin-top:2px}
 .num.bad{color:var(--red);font-weight:600}
 .num .sub{color:var(--mut);font-size:12.5px}
+.tbl td .sub{display:block;font-size:12px;line-height:1.2;margin-top:2px}
+.tbl td.num .sub.bad{color:var(--red,#D92D20)}
 .zero{color:var(--mut2)}
 .mtr{display:inline-flex;align-items:center;gap:12px}
 .mtr .tr{position:relative;width:72px;height:5px;border-radius:3px;background:#EFEFEC}
@@ -331,6 +333,16 @@ tr:hover .rowact,.row:hover .rowact{opacity:1}
 .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,14px);background:var(--ink);color:#fff;font:500 13.5px/1.35 var(--sans);padding:11px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:all .2s;z-index:80;display:flex;align-items:center;gap:9px;box-shadow:var(--pop);max-width:calc(100% - 32px)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .toast svg.i{color:#7FD3A3}
+
+
+/* largeur ordinateur : tout le tableau des sociétés tient sans défilement */
+@media (min-width:701px){
+  #t-socs{min-width:0;table-layout:auto}
+  #t-socs th{white-space:normal;line-height:1.25;vertical-align:bottom}
+  #t-socs td{padding-left:12px;padding-right:12px}
+  #t-socs .sn .mt{white-space:normal;max-width:190px}
+  #t-socs td[data-l="État"] .pill{white-space:normal;line-height:1.25;text-align:left;max-width:150px}
+}
 
 /* ---------- barre d'onglets (téléphone) ---------- */
 .tabbar{display:none}

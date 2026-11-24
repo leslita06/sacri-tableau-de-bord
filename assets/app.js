@@ -61,6 +61,7 @@ function yM(extra){return Object.assign({grid:GRID,border:{display:false},ticks:
 var SEM=D.semaines.map(fr);
 /* étiquettes directes : texte posé sur le graphique */
 function labelsPlugin(fn){return{id:"lbl",afterDatasetsDraw:function(c){var x=c.ctx;x.save();fn(c,x);x.restore();}};}
+function lbl(x,s,px,py,a,col,pts){x.font='600 12px "Inter",sans-serif';var w=x.measureText(s).width+12,h=20,bx=px-w/2;if(bx+w>a.right)bx=a.right-w;if(bx<a.left)bx=a.left;var top=py;(pts||[]).forEach(function(q,i){var n=pts[i+1];if(q.x<=bx+w&&(n?n.x:q.x)>=bx){top=Math.min(top,q.y,n?n.y:q.y);}});var by=Math.min(py-12,top-8)-h;if(by<a.top-22)by=py+12;x.save();x.fillStyle="#fff";x.strokeStyle=col;x.globalAlpha=1;x.lineWidth=1;x.beginPath();if(x.roundRect)x.roundRect(bx,by,w,h,5);else x.rect(bx,by,w,h);x.fill();x.stroke();x.restore();txt(x,s,bx+w/2,by+h/2+.5,{c:col,b:"middle"});}
 function txt(x,s,px,py,o){o=o||{};x.font=(o.w||"600")+" "+(o.s||12)+'px "Inter",sans-serif';x.fillStyle=o.c||INK;x.textAlign=o.a||"center";x.textBaseline=o.b||"bottom";x.fillText(s,px,py);}
 
 /* ---------- données agrégées ---------- */
@@ -94,10 +95,10 @@ function renderEnsemble(){
       '<td class="num" data-l="Facturé en nov.">'+M(m.facture,2)+' M</td>'+
       '<td data-l="Trésorerie"><span class="mtr"><span class="tr" title="Trait noir : seuil de '+M(m.seuil,0)+' M"><i class="'+(m.sous?"bad":"")+'" style="width:'+(m.treso/mx*100)+'%"></i><b style="left:'+(m.seuil/mx*100)+'%"></b></span><span class="num">'+M(m.treso)+" M</span></span></td>"+
       '<td class="num'+(m.sous?" bad":"")+'" data-l="Point bas 13 sem.">'+M(m.point_bas)+' M</td>'+
-      '<td class="num hm" data-l="Clients doivent">'+M(m.encours)+' M'+(m.imp60?' <span class="sub">· '+M(m.imp60)+" M à 60 j+</span>":"")+'</td>'+
+      '<td class="num hm" data-l="Clients doivent">'+M(m.encours)+' M'+(m.imp60?'<span class="sub">dont '+M(m.imp60)+" M à 60 j+</span>":"")+'</td>'+
       '<td class="num hm" data-l="Devis en cours">'+M(m.devis)+' M</td>'+
       '<td class="num'+(m.rupt?" bad":" zero")+'" data-l="Ruptures">'+m.rupt+'</td>'+
-      '<td class="num hm'+(m.atelier?"":" zero")+'" data-l="En atelier">'+m.atelier+(m.atelier_ret?' <span class="sub bad">· '+m.atelier_ret+" en retard</span>":"")+'</td>'+
+      '<td class="num hm'+(m.atelier?"":" zero")+'" data-l="En atelier">'+m.atelier+(m.atelier_ret?'<span class="sub bad">dont '+m.atelier_ret+" en retard</span>":"")+'</td>'+
       '<td data-l="État"><span class="pill '+e[0]+'">'+ic(e[2])+e[1]+"</span></td></tr>";}).join("")+
     '</tbody><tfoot><tr><td>Groupe</td><td class="num" data-l="Facturé en nov.">'+M(G.facture)+' M</td><td class="num" data-l="Trésorerie">'+M(G.treso)+' M</td><td class="num" data-l="Point bas 13 sem.">'+M(G.point_bas)+' M</td><td class="num hm" data-l="Clients doivent">'+M(G.encours)+' M</td><td class="num hm" data-l="Devis en cours">'+M(G.devis)+' M</td><td class="num" data-l="Ruptures">'+sum(D.socs.map(function(s){return SOC[s].rupt;}))+'</td><td class="num hm" data-l="En atelier">'+sum(D.socs.map(function(s){return SOC[s].atelier;}))+'</td><td class="ra"></td></tr></tfoot>';
   [].forEach.call(document.querySelectorAll("#t-socs tbody tr"),function(r){r.onclick=function(){pickSF(SF===r.dataset.soc?null:r.dataset.soc);};});
@@ -136,7 +137,7 @@ function trLine(id,C,big){
       x.fillStyle=INK;x.beginPath();x.arc(p0.x,p0.y,3.5,0,7);x.fill();
       txt(x,M(data[0])+" M",p0.x+4,p0.y-8,{a:"left"});
       x.fillStyle=C.sous?RED:ORA;x.beginPath();x.arc(pb.x,pb.y,4,0,7);x.fill();
-      txt(x,"point bas "+M(mn)+" M",Math.min(pb.x,a.right-2),pb.y-9,{a:pb.x>a.right-70?"right":"center",c:C.sous?RED:ORA});
+      lbl(x,"point bas "+M(mn)+" M",pb.x,pb.y,a,C.sous?RED:ORA,me.data);
       var sy=c.scales.y.getPixelForValue(C.seuil);txt(x,"seuil "+M(C.seuil,0)+" M",a.left+4,sy-5,{a:"left",c:RED,w:"500",s:11});
     })]});
 }
@@ -162,7 +163,7 @@ function renderDecisions(){
   var gr=[["En retard","triangle-alert",function(d){return d.ech<T;},1],["Cette semaine","calendar-days",function(d){return d.ech>=T&&d.ech<nwk;}],["Plus tard","calendar-clock",function(d){return d.ech>=nwk;}]];
   $("d-afaire").innerHTML=a.length?gr.map(function(g){var it=a.filter(g[2]);if(!it.length)return"";return '<p class="lg-h'+(g[3]?" late":"")+'">'+ic(g[1])+g[0]+' <span class="c">'+it.length+"</span></p>"+it.map(decRow).join("");}).join(""):'<p class="empty">Aucune décision à prendre ici. Les décisions prises sont dans le suivi.</p>';
   function item(d){var j=journal(d),last=j[j.length-1];var done=stat(d)==="fait";
-    return '<button class="row" data-open="'+d.id+'"><span class="ty">'+ic(done?"circle-check-big":TYPES[d.type].ico)+'</span><span style="min-width:0"><span class="tt" style="display:block">'+esc(d.titre)+'</span><span class="mm">'+stag(d.soc)+(last?"<span><b style=\"font-weight:500;color:#3D3D3D\">"+last[0]+"</b> · "+esc(last[1])+"</span>":"")+'</span></span><span class="rr"><span class="pill '+(done?"g":"b")+'">'+ic(done?"check":"clock")+(done?"Fait":"En cours")+"</span></span></button>";}
+    return '<button class="row" data-open="'+d.id+'"><span class="ty">'+ic(done?"circle-check-big":TYPES[d.type].ico)+'</span><span style="min-width:0"><span class="tt" style="display:block">'+esc(d.titre)+'</span><span class="mm">'+stag(d.soc)+(last?"<span><b style=\"font-weight:500;color:#3D3D3D\">"+last[0]+"</b>, "+esc(last[1])+"</span>":"")+'</span></span><span class="rr"><span class="pill '+(done?"g":"b")+'">'+ic(done?"check":"clock")+(done?"Fait":"En cours")+"</span></span></button>";}
   var ec=decs().filter(function(d){return stat(d)==="en_cours";}),fa=decs().filter(function(d){return stat(d)==="fait";});
   $("n-encours").textContent=ec.length;$("n-fait").textContent=fa.length;
   $("d-encours").innerHTML=ec.length?ec.map(item).join(""):'<p class="empty">Rien en cours.</p>';
@@ -273,7 +274,7 @@ function renderTreso(){
       options:{maintainAspectRatio:false,animation:false,plugins:{tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false,min:0}}}});});
   var a=C.aged,tot=sum(a),lb=["Pas encore dû","1 à 30 jours","31 à 60 jours","61 à 90 jours","Plus de 90 jours"],col=["#E3E3DF","#C9C9C4","#A3A3A0","#F2A37B",RED];
   $("aged-t").textContent="Ce que les clients doivent"+(SF?" à "+SF:" au groupe")+", par ancienneté";
-  $("aged").innerHTML='<div class="ag-bar">'+a.map(function(v,i){return v?'<div style="width:'+(v/tot*100)+"%;background:"+col[i]+'" title="'+lb[i]+" : "+M(v)+' M"></div>':"";}).join("")+'</div><div class="ag-l">'+a.map(function(v,i){return '<div class="'+(i>=3&&v?"bad":"")+'"><span><i style="background:'+col[i]+'"></i>'+lb[i]+"</span><b>"+M(v)+"<small>M · "+(tot?Math.round(v/tot*100):0)+" %</small></b></div>";}).join("")+"</div>";
+  $("aged").innerHTML='<div class="ag-bar">'+a.map(function(v,i){return v?'<div style="width:'+(v/tot*100)+"%;background:"+col[i]+'" title="'+lb[i]+" : "+M(v)+' M"></div>':"";}).join("")+'</div><div class="ag-l">'+a.map(function(v,i){return '<div class="'+(i>=3&&v?"bad":"")+'"><span><i style="background:'+col[i]+'"></i>'+lb[i]+"</span><b>"+M(v)+"<small>M, "+(tot?Math.round(v/tot*100):0)+" %</small></b></div>";}).join("")+"</div>";
 }
 
 /* ---------- alertes ---------- */
@@ -284,12 +285,12 @@ function renderAlertes(){
   var top=Object.keys(cnt).sort(function(x,y){return cnt[y]-cnt[x];})[0];
   $("al-lede").innerHTML="<b>"+pl(A.length,"alerte")+"</b>"+(SF?" pour "+SF:"")+", dont <span class=\"r\">"+pl(h,"forte","fortes")+"</span>."+(top?" Le sujet le plus chargé : "+CATS[top].l.toLowerCase()+" ("+cnt[top]+").":"")+" Cliquez une case pour ne garder que ses alertes.";
   var cats=Object.keys(CATS);
-var c=document.querySelector(".mx-wrap");if(c&&!c._scroller){c._scroller=true;c.setAttribute("role","region");c.setAttribute("aria-label","Matrice des alertes par société et sujet — défilement horizontal disponible");c.setAttribute("tabindex","0");}
+var c=document.querySelector(".mx-wrap");if(c&&!c._scroller){c._scroller=true;c.setAttribute("role","region");c.setAttribute("aria-label","Matrice des alertes par société et sujet, défilement horizontal disponible");c.setAttribute("tabindex","0");}
   $("mx").innerHTML="<thead><tr><th></th>"+cats.map(function(c){return "<th>"+ic(CATS[c].ico)+CATS[c].l+"</th>";}).join("")+"</tr></thead><tbody>"+D.socs.map(function(s){
     return '<tr class="'+(SF&&SF!==s?"dim":"")+'"><td class="rh"><span>'+tile(s)+s+"</span></td>"+cats.map(function(c){
       var it=D.alertes.filter(function(a){return a.cat===c&&socsOf(a.soc).indexOf(s)>=0;}),n=it.length,hh=it.filter(function(a){return a.niv==="haute";}).length;
       var cl=n===0?"z":(hh>=2||n>=3?"l3":hh?"l2":"l1");
-      return '<td class="'+cl+(SF===s&&AF.cat===c?" on":"")+'" data-ms="'+s+'" data-mc="'+c+'">'+(n||"·")+"</td>";
+      return '<td class="'+cl+(SF===s&&AF.cat===c?" on":"")+'" data-ms="'+s+'" data-mc="'+c+'">'+(n||"0")+"</td>";
     }).join("")+"</tr>";}).join("")+"</tbody>";
   [].forEach.call(document.querySelectorAll("[data-ms]"),function(td){if(td.classList.contains("z"))return;td.onclick=function(){if(SF===td.dataset.ms&&AF.cat===td.dataset.mc){AF.cat=null;}else{SF=td.dataset.ms;AF.cat=td.dataset.mc;}AF.niv=null;renderAll();};});
   var segs=[["Toutes",null,"list-checks",A.length],["Fortes",{niv:"haute"},"siren",h],["À surveiller",{niv:"moyenne"},"eye",A.length-h]];

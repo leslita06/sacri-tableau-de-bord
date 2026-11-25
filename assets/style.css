@@ -415,9 +415,9 @@ h2 svg.i{color:var(--mut)}
   .fbar .fsep{display:none}
   .fg{width:100%}
   .fg>.fl{min-width:62px}
-  .fg .seg{flex:1;overflow-x:auto;scrollbar-width:none}
-  .fg .seg::-webkit-scrollbar{display:none}
-  .fg .seg button{flex:1 0 auto;justify-content:center;padding:7px 9px}
+  .fg{flex-wrap:wrap;row-gap:8px}
+  .fg .seg{flex:1 1 100%;display:flex;width:100%;box-sizing:border-box;overflow:hidden}
+  .fg .seg button{flex:1 1 0;min-width:0;justify-content:center;padding:8px 4px;font-size:12.5px}
   .fg .sel2{flex:1}
   .fg .sel2 select{width:100%}
   .fbar .note-f{margin-left:0}
